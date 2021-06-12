@@ -1,6 +1,7 @@
 # Getting started with state management in Flutter (Part 1)
-  Introduction
-  When do we need to use state in flutter
+  
+## Introduction
+  Flutter is great for making beautiful UIs with its everything is a widget concepts. But how do you actually move data around oyur application. State management is a huge part of any good mobile application. State management is critical to providing a pleasurable user experience. We are going to dive into some of the basic state management concepts.
 
 ## Shift your design thinking to be declarative
   A huge paradigm shift when working in Flutter is thinking declaratively. The way most of our brains work its much easy to understand imperative programming concept. When our code is organized as sequential steps it is easy to follow the code for one branch of code to the next. When programming declaratively we describe what need to be done and our system responds based on the action happening.
@@ -25,7 +26,9 @@
   
   You have a few form fields with a button. When we click on the button we expect for that button to be disabled while we are submitting the form. 
   
-  In order to manage the state of the button we decide to define a boolean value defined as `isLoading`. When `isLoading` is `false` we enable the submit button and a `Text` widget is show with "Login", when `true` the text of the button will be hidden and a `CircularProgressIndicator` will be shown inside of the button.
+  In order to manage the state of the button we decide to define a boolean value defined as `isLoading`. 
+  
+  When `isLoading` is `false` we enable the submit button and a `Text` widget is show with "Login", when `true` the text of the button will be hidden and a `CircularProgressIndicator` will be shown inside of the button.
 
   In order to make the button not clickable we have to return `null` from the `onTapped` event on the button we will also switch on the state of our `isLoading` variable that we have been tracking.
 
@@ -44,9 +47,12 @@
     What is it
     How does is work
 
-  Each time we make a call to get data for our app we will pass the `accessToken` that we retrieved from our state and send it to our data access layer where the user is validated before returning data.
+  Each time we make a call to get data for our app we will pass the `token` that we retrieved from our state and send it to our data access layer where the user is validated before returning data.
 
-## Options for State Management
+## Whats next?
+  In conclusion state is one of those things that are at the core of any application we build. It doesnt matter what method of state management that you use. What really matters is that you understand the decision behind when to use the types of state within you app. It will help you app become more maintainable as your state management design build consistency.
+  
+### Other options for State Management
 
   We have now learned the difference between different types of state for your Flutter applications and when to use them.
 
@@ -60,4 +66,3 @@
   - Redux
   - ...
 
-  In conclusion state is one of those things that are at the core of any application we build. It doesnt matter what method of state management that you use. What really matters is that you understand the decision behind when to use the types of state within you app. It will help you app become more maintainable as your state management design build consistency.

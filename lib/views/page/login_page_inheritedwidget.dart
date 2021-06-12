@@ -65,6 +65,7 @@ class _LoginPageInheritedWidgetState extends State<LoginPageInheritedWidget> {
                     ),
                     TextFormField(
                       controller: _passwordTextController,
+                      obscureText: true,
                       decoration: InputDecoration(
                         labelText: "Password",
                         floatingLabelBehavior: FloatingLabelBehavior.auto,

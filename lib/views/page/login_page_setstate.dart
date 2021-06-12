@@ -58,12 +58,14 @@ class _LoginPageSetStateState extends State<LoginPageSetState> {
                     style: OutlinedButton.styleFrom(
                       minimumSize: Size(500, 50),
                     ),
-                    onPressed: () {
-                      _toggleLoader(state: true);
-                      Future.delayed(const Duration(seconds: 3), () {
-                        _toggleLoader(state: false);
-                      });
-                    },
+                    onPressed: isLoading
+                        ? null
+                        : () {
+                            _toggleLoader(state: true);
+                            Future.delayed(const Duration(seconds: 3), () {
+                              _toggleLoader(state: false);
+                            });
+                          },
                     child: isLoading
                         ? SizedBox(
                             height: 24.0,
