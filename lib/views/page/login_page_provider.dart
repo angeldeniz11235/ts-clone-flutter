@@ -1,19 +1,17 @@
-import 'package:dev_jayhackett_blogdemo/bloc/app_bloc_provider.dart';
+import 'package:dev_jayhackett_blogdemo/bloc/app_bloc.dart';
 import 'package:dev_jayhackett_blogdemo/views/page/home_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class LoginPageInheritedWidget extends StatefulWidget {
-  LoginPageInheritedWidget({Key? key, required this.title}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  LoginPage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _LoginPageInheritedWidgetState createState() =>
-      _LoginPageInheritedWidgetState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageInheritedWidgetState extends State<LoginPageInheritedWidget> {
+class _LoginPageState extends State<LoginPage> {
   bool isLoading = false;
   bool? isAuthenticated;
   TextEditingController? _usernameTextController;
@@ -66,7 +64,6 @@ class _LoginPageInheritedWidgetState extends State<LoginPageInheritedWidget> {
                     ),
                     TextFormField(
                       controller: _passwordTextController,
-                      obscureText: true,
                       decoration: InputDecoration(
                         labelText: "Password",
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
@@ -81,11 +78,11 @@ class _LoginPageInheritedWidgetState extends State<LoginPageInheritedWidget> {
                     ),
                     onPressed: () async {
                       _toggleLoader(state: true);
-                      // var bloc = AppBloc.of(context);
-                      var bloc = Provider.of<AppBloc>(context, listen: false);
-                      bool isAuthenticated = await bloc.authenticate(
-                          _usernameTextController!.text,
-                          _passwordTextController!.text);
+                      var bloc = AppBloc.of(context);
+                      bool isAuthenticated = await bloc?.authenticate(
+                              _usernameTextController!.text,
+                              _passwordTextController!.text) ??
+                          false;
                       if (isAuthenticated) {
                         _toggleLoader(state: false);
                         Navigator.push(
