@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Deploy your Flutter app to AppCenter using Fastlane Part 1 &lpar;Android&rpar;</title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1 id="deploy-your-flutter-app-to-appcenter-using-fastlane-part-1-android">Deploy your Flutter app to AppCenter using Fastlane Part 1 (Android)</h1>
+<h2 id="your-created-a-flutter-app-on-your-local-machine-but-how-do-you-share-it-with-the-world">Your created a Flutter app on your local machine but how do you share it with the world</h2>
+<p>One of the most satifying feelings is picking up a new technology and building features that work. But now we want to get our app into our user hands. We will eventually want to get our apps live on the app stores for Android and iOS. But first lets deploy our app to a place where our friends can test our app before we get a bunch of negative reviews on the app store. In part one we will set up Fastlane for Android, since Android setup has less steps.</p>
+<h2 id="using-appcenter-as-a-testing-tool">Using AppCenter as a testing tool</h2>
+<p><a href="https://appcenter.ms">AppCenter</a>, Also known as the &quot;Hockey App&quot;, is a tool that is designed for buidling, testing and deploying your mobile applications. In this post we will use AppCenter as the conduent for testing our applications before we deploy our app to the app store. AppCenter gives us the ability to create our own internal &quot;test&quot; app store so that we can share our app with other to test on their physical devices. Instead of using AppCenter to manage our build process we will use a tool called <a href="https://fastlane.tools">Fastlane</a></p>
+<h2 id="why-fastlane">Why Fastlane</h2>
+<p>Fastlane is the easist way that I have found to manage the build and release activities related to Android and iOS apps. Fastlane gives you built in actions that allow you to perform builds, manage certificates, screenshots, etc. in order to build out your ci/cd pipelines.</p>
+<h2 id="getting-started-with-fastlane">Getting started with Fastlane</h2>
+<p>Install Ruby (version 2.5 or newer)</p>
+<ul>
+<li>If you are using a Mac, I recommend <code>rbenv</code>, click <a href="https://github.com/rbenv/rbenv#installation">here</a> for installation instructions</li>
+<li>If you are using Windows, I recommend using <a href="https://community.chocolatey.org/packages/ruby">Chocolatey</a> to download Ruby</li>
+</ul>
+<p>Now that you have ruby install Bundler</p>
+<p><code>gem install bundler</code></p>
+<p>Then run <code>bundler update</code> to make sure you have the latest versions of yourr bundles</p>
+<p>change directory into your android folder</p>
+<p><code>cd android</code></p>
+<p>then..</p>
+<p><code>fastlane init</code></p>
+<p>Your will now have a new directory in your android folder named <code>fastlane</code>. Inside you will find <code>fastlane/Fastfile</code> where you will find some boilerplate <code>lanes</code></p>
+<p>We will create a new lane to deploy our app to AppCenter, but first we need to install the <a href="https://github.com/microsoft/fastlane-plugin-appcenter">Fastlane plugin for AppCenter</a></p>
+<p><code>fastlane add_plugin appcenter</code></p>
+<p>The Fastlane appcenter plugin supports the following actions as of version <code>1.11.1</code></p>
+<pre><code><code><div>appcenter_fetch_version_number, appcenter_fetch_devices, appcenter_upload
+</div></code></code></pre>
+<p><code>fastlane action appcenter_upload</code></p>
+<p>This command will print out a list of the available parameter that the action supports. This command works with any built in or installed action.</p>
+<h3 id="create-your-upload-keystorejks-for-local-code-signing">Create your upload keystore.jks for local code signing</h3>
+<p>In order to build a release version of your app you will need to generate a keystore. The keystore is used to sign your app using your upload key and later your app is signed by <a href="https://developer.android.com/studio/publish/app-signing#app-signing-google-play">Play App signing</a>.</p>
+<p>The Flutter team has put together An instruction guide on flutter.dev for <a href="https://flutter.dev/docs/deployment/android#create-an-upload-keystore">creating and upload keystore</a>. One issue that I had while working on a mac (.zshrc) is the java keytool wasnt in the path. So I had to run flutter doctor in order to see where keytool was located.</p>
+<p>There is a note in the documentation about how to handle this issue. Make sure to read the NOTE!</p>
+<h3 id="configure-signing-in-gradle">Configure signing in gradle</h3>
+<p>When you set up your keystore you will set up a store password and key password. You will need this when you create your <code>key.properties</code> file.</p>
+<p>Create a file <code>./android/key.properties</code> with the following configuration</p>
+<pre><code><code><div>storePassword={storePassword}
+keyPassword={keyPassword}
+keyAlias=upload
+storeFile={path_to_keystore.jks_file}
+</div></code></code></pre>
+<p>In your <code>android/app/build.gradle</code> file you will find a section</p>
+<pre><code><code><div>buildTypes {
+    release {
+        signingConfig signingConfigs.debug
+    }
+}
+</div></code></code></pre>
+<p>Replace that section with the following config.</p>
+<pre><code><code><div>signingConfigs {
+    release {
+        keyAlias keystoreProperties['keyAlias']
+        keyPassword keystoreProperties['keyPassword']
+        storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+        storePassword keystoreProperties['storePassword']
+    }
+}
+buildTypes {
+    release {
+        signingConfig signingConfigs.release
+    }
+}
+</div></code></code></pre>
+<h2 id="build-the-android-apk">Build the Android Apk</h2>
+<p>Now that we have the configuration set up for our release version of our android app we will build a release version of our app.</p>
+<p>The command to build an android apk is:</p>
+<p><code>flutter build apk</code></p>
+<p>This command will build our app and output the apk in our <code>./build</code> folder. If your build folder doesnt exist yet thats ok. Flutter will generate it for us when we build for the first time.</p>
+<h2 id="building-out-our-lane-to-upload-to-appcenter">Building out our lane to upload to AppCenter</h2>
+<p>The first thing that we we are going to have to do is setup our flutter build for Android. Once we have our android build set up we will deploy our apk to AppCenter.</p>
+<p>We will use the <a href="https://github.com/dotdoom/fastlane-plugin-flutter">Fastlane plugin for Flutter</a></p>
+<p><code>fastlane add_plugin flutter</code></p>
+<p>We will create our first lane that will describe how our <code>apk</code> is built.</p>
+<pre><code><code><div>desc &quot;build android apk&quot;
+lane :build do
+    flutter_build(
+        build: &quot;apk&quot;,
+        build_number: {buildNumber}
+    )
+end
+</div></code></code></pre>
+<h2 id="finally-uploading-our-app-to-appcenter">Finally uploading our app to AppCenter</h2>
+<p>Once we build our apk successfully we now have an artifact tht we can upload to appcenter.</p>
+<p>Earlier in the process we ran <code>bundle exec fastlane init</code> in our <code>android</code> directory. If we open up our fastfile (<code>./android/fastlane/Fastfile</code>)</p>
+<p>We will be adding a lane called upload_to_appcenter.</p>
+<pre><code><code><div>desc &quot;upload android apk to app center&quot;
+lane :upload_to_appcenter do
+    appcenter_upload(
+        # APPCENTER_API_TOKEN set in .env file, get this value from appcenter
+        owner_name: &quot;{{owner_name}}&quot;, # owner name to be shown in appcenter for the app
+        owner_type: &quot;user&quot;, # Default is user - set to organization for appcenter organizations
+        app_name: &quot;{{app_name}}&quot;, # app name  is the name of your app registered with android
+        file: {{file}}, # path of the apk that was built for upload
+        notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
+    )
+end
+</div></code></code></pre>
+<p>Since our APPCENTER_API_TOKEN hold sensitive information we do not want to expose that information to all of the members of our team. I am using a package called <code>.dotenv</code> to manage environment variables for each environment. I will do a future blog post on <code>.dotenv</code> but go to <a href="https://docs.fastlane.tools/best-practices/keys/">fastlane keys - best practices</a> for managing fastlane keys.</p>
+<p>Now for the moment of truth</p>
+<p>Run:</p>
+<p><code>bundle exec fastlane android upload_to_appcenter</code></p>
+<p>Drum roll please..............</p>
+<p>on successful upload you will see the following in your terminal</p>
+<p>Then go over to AppCenter and check the portal to see your new Android build available for download.</p>
+<h2 id="gotchas">Gotchas...</h2>
+<p>The version that you see in appcenter after your first build is uploaded will be <code>1.0.0 (1)</code> by default. the first part of the version comes from the <code>version</code> property inside of your <code>pubspec.yaml</code> file. Anytime you want to update your version make sure that you update the version in your yaml file.</p>
+<p>The second value in the version displayed in appcenter is the <code>build-number</code>. The build number by default will always be <code>1</code> if we dont specify the <code>build-number</code>. So to customize this value you will need to pass build number to your build.</p>
+<p>For example:</p>
+<p><code>flutter build apk --build-number 1000000004</code></p>
+<h2 id="was-it-worth-it">Was it worth it</h2>
+<p>Building and deploying apps can be a tedious and sometimes frustrating thing. Every framework has its own process to get the application deployed and keeping track of those differences. This is where fastlane shines. We can set up our build and release pipeline one time and reliably repeat that process time and time again.</p>
+
+    </body>
+    </html>
