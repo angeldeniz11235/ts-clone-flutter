@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: appcenter_fetch_version_number" time="0.433951">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: flutter_build" time="34.683364">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>
