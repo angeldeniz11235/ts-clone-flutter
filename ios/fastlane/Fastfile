@@ -62,12 +62,15 @@ lane :create_app do
 end
 
 platform :ios do
+  before_all do
+    Dotenv.load ".env.ios"
+  end
   desc "sync signing"
   lane :signing do
     sync_code_signing # match
     mapping = Actions.lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
     update_code_signing_settings(
-      profile_name: [ENV['MATCH_APP_IDENTIFIER']]
+      profile_name: mapping[ENV['MATCH_APP_IDENTIFIER']]
     )
   end
 
