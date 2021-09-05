@@ -5,7 +5,7 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: create_app_online" time="10.815258">
+      <testcase classname="fastlane.lanes" name="0: sync_code_signing" time="81.559795">
         
       </testcase>
     
