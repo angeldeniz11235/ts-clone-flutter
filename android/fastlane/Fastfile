@@ -32,6 +32,10 @@ def increment_build_number(version, versionParts)
 end
 
 platform :android do
+  before_all do
+    Dotenv.load ".env.secret"
+  end
+
   desc "build and upload android apk to app center"
   lane :build_and_upload_to_appcenter do
     build
