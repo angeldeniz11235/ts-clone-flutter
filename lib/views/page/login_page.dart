@@ -3,9 +3,9 @@ import 'package:dev_jayhackett_blogdemo/views/page/home_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key, required this.title}) : super(key: key);
+  LoginPage({Key? key, required this.appName}) : super(key: key);
 
-  final String title;
+  final String appName;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.appName),
       ),
       body: Container(
         child: Center(
