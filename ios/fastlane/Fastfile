@@ -34,12 +34,13 @@ def set_new_build_number(versionParts)
   return buildNumber
 end
 
-def increment_build_number(version, versionParts)
+def increment_build_number_ios(version, versionParts)
   major = Integer(versionParts[0]) === 0 ? "000" : (100 * (Integer(versionParts[0])))
   minor = Integer(versionParts[1]) === 0 ? "000" : (100 * (Integer(versionParts[1])))
-  
+  puts version["build_number"]
   patch_number_parts = version["build_number"].split(//).last(4)
   real_patch_string = patch_number_parts.join
+  puts real_patch_string
   real_patch_number = Integer(real_patch_string)
   patch_length = real_patch_number.to_s.length()
   case patch_length
@@ -56,6 +57,33 @@ def increment_build_number(version, versionParts)
   return buildNumber
 end
 
+def getBuildNumber(pubspec)
+  # pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
+    versionParts = pubspec["version"].to_s.split('.')
+    latestVersionString = ""
+    begin  # "try" block
+      version = appcenter_fetch_version_number(
+        owner_name: "Codingjock-LLC",
+        app_name: "dev.jayhackett.blogdemo.ios",
+        version: pubspec["version"] #"a specific version to get the last release for" # optional, don't set this value to get the last upload of all versions
+      )
+      puts version
+    rescue => ex # optionally: `rescue Exception => ex`
+      puts "error"
+      version = {
+        "version": "0.0.0"
+      }
+    end 
+    if pubspec["version"] === version["version"]
+      puts "increment_build_number_ios"
+      buildNumber = increment_build_number_ios(version, versionParts)
+    else 
+      puts "set_new_build_number"
+      buildNumber = set_new_build_number(versionParts)
+    end
+  return buildNumber
+end
+
 desc "Create on Developer Portal and App Store Connect"
 lane :create_app do
   create_app_online # produce
@@ -64,44 +92,87 @@ end
 platform :ios do
   before_all do
     Dotenv.load ".env.ios"
+    Dotenv.load ".env.secret"
   end
-  desc "sync signing"
+  desc "sync appstore signing"
   lane :signing do
-    sync_code_signing # match
+    sync_code_signing(
+      type: "appstore"
+    ) # match
     mapping = Actions.lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
     update_code_signing_settings(
       profile_name: mapping[ENV['MATCH_APP_IDENTIFIER']]
     )
   end
 
-  desc "build ios app"
-  lane :build do
-    pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
-    versionParts = pubspec["version"].to_s.split('.')
-    begin  # "try" block
-      version = appcenter_fetch_version_number(
-        owner_name: "Codingjock-LLC",
-        app_name: "dev.jayhackett.blogdemo",
-        version: pubspec["version"] #"a specific version to get the last release for" # optional, don't set this value to get the last upload of all versions
-      )
-    rescue => ex # optionally: `rescue Exception => ex`
-      puts "error"
-      version = {
-        "version": "0.0.0"
-      }
-    end 
-    if pubspec["version"] === version["version"]
-      puts "increment_build_number"
-      buildNumber = increment_build_number(version, versionParts)
-    else 
-      puts "set_new_build_number"
-      buildNumber = set_new_build_number(versionParts)
-    end
-    puts "running flutter_build() for #{pubspec["version"]} (#{buildNumber})"
-    flutter_build(
-      build: "ios",
-      # build_number: buildNumber
+  desc "sync appcenter signing"
+  lane :appcenter_signing do
+    sync_code_signing(
+      type: "adhoc"
+    ) # match
+    mapping = Actions.lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
+    update_code_signing_settings(
+      profile_name: mapping[ENV['MATCH_APP_IDENTIFIER']]
     )
+  end
+
+  desc "build ios appcenter app"
+  lane :build_appcenter do
+    device_registration
+    appcenter_signing
+
+    pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
+    buildNumber = getBuildNumber(pubspec)
+    
+    # versionParts = pubspec["version"].to_s.split('.')
+    # begin  # "try" block
+    #   version = appcenter_fetch_version_number(
+    #     owner_name: "Codingjock-LLC",
+    #     app_name: "dev.jayhackett.blogdemo.ios",
+    #     version: pubspec["version"] #"a specific version to get the last release for" # optional, don't set this value to get the last upload of all versions
+    #   )
+    # rescue => ex # optionally: `rescue Exception => ex`
+    #   puts "error"
+    #   version = {
+    #     "version": "0.0.0"
+    #   }
+    # end 
+    # if pubspec["version"] === version["version"]
+    #   puts "increment_build_number_ios"
+    #   puts version["version"]
+    #   buildNumber = increment_build_number_ios(version, versionParts)
+    # else 
+    #   puts "set_new_build_number"
+    #   buildNumber = set_new_build_number(versionParts)
+    # end
+    puts "running flutter_build() for #{pubspec["version"]} (#{buildNumber})"
+
+    gym(
+      output_directory: "../build/ios/adhoc",
+      xcargs: {
+        :PROVISIONING_PROFILE_MAPPING => "match AdHoc dev.jayhackett.blogdemo",
+      },
+      export_method: "ad-hoc"
+    )
+  end
+
+  desc "build ios app for testflight"
+  lane :build_testflight do
+    pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
+    buildNumber = getBuildNumber(pubspec)
+    puts "running flutter_build() for #{pubspec["version"]} (#{buildNumber})"
+    signing
+    gym(
+      output_directory: "../build/ios/appstore",
+      xcargs: {
+        :PROVISIONING_PROFILE_MAPPING => "match appstore dev.jayhackett.blogdemo",
+      },
+      export_method: "app-store"
+    )
+    # flutter_build(
+    #   build: "ios",
+    #   # build_number: buildNumber
+    # )
   end
 
   desc "release to test flight"
@@ -111,28 +182,59 @@ platform :ios do
 
   desc "build and upload iOS binaries to app center"
   lane :release_to_appcenter do
-    build
+    build_appcenter
     upload_to_appcenter
-    # appcenter_upload(
-    #   # APPCENTER_API_TOKEN set in .env file
-    #   owner_name: "Codingjock-LLC", # owner name to be shown in appcenter for the app
-    #   owner_type: "user", # Default is user - set to organization for appcenter organizations
-    #   app_name: "dev.jayhackett.blogdemo", # app name  is the name of your app registered with android
-    #   file: "../build/app/outputs/flutter-apk/app-release.apk", # location of the apk that was built for upload
-    #   notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
-    # )
+  end
+
+  desc "register devices"
+  lane :device_registration do
+    register_devices(
+      devices: {
+          "Codingjock iPhone 12 Pro Max" => "00008101-00193CE10E38001E"
+      }
+    )
+  end
+
+  desc "upload iOS to test flight"
+  lane :upload_to_testflight do
+    pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
+    buildNumber = getBuildNumber(pubspec)
+    increment_build_number(
+      build_number: buildNumber
+    )
+    build_testflight
+    api_key = app_store_connect_api_key(
+      key_id: "GZXRRM9LG5",
+      issuer_id: "d811e2ba-b4b8-4337-b590-d1e4edd38dd0",
+      key_filepath: "./fastlane/AuthKey_GZXRRM9LG5.p8", #ios/fastlane/AuthKey_GZXRRM9LG5.p8
+      duration: 1200, # optional (maximum 1200)
+      in_house: false # optional but may be required if using match/sigh
+    )
+    pilot(
+      api_key: api_key,
+      build_number: pubspec["version"],
+      app_version: buildNumber,
+      ipa: "../build/ios/appstore/Runner.ipa",
+    )
   end
 
   desc "upload iOS to app center"
   lane :upload_to_appcenter do
-    # appcenter_upload(
-    #   # APPCENTER_API_TOKEN set in .env file
-    #   owner_name: "Codingjock-LLC", # owner name to be shown in appcenter for the app
-    #   owner_type: "user", # Default is user - set to organization for appcenter organizations
-    #   app_name: "dev.jayhackett.blogdemo", # app name  is the name of your app registered with android
-    #   file: "../build/app/outputs/flutter-apk/app-release.apk", # location of the apk that was built for upload
-    #   notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
-    # )
+    pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
+    buildNumber = getBuildNumber(pubspec)
+    increment_build_number(
+      build_number: buildNumber
+    )
+    appcenter_upload(
+      # APPCENTER_API_TOKEN set in .env file
+      owner_name: "Codingjock-LLC", # owner name to be shown in appcenter for the app
+      owner_type: "user", # Default is user - set to organization for appcenter organizations
+      app_name: "dev.jayhackett.blogdemo.ios", # app name  is the name of your app registered with android
+      file: "../build/ios/adhoc/Runner.ipa", # location of the apk that was built for upload
+      dsym: "../build/ios/adhoc/Runner.app.dSYM.zip",
+      version: buildNumber,
+      notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
+    )
   end
 
   

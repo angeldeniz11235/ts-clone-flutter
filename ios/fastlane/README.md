@@ -28,12 +28,22 @@ Create on Developer Portal and App Store Connect
 ```
 fastlane ios signing
 ```
-sync signing
-### ios build
+sync appstore signing
+### ios appcenter_signing
 ```
-fastlane ios build
+fastlane ios appcenter_signing
 ```
-build ios app
+sync appcenter signing
+### ios build_appcenter
+```
+fastlane ios build_appcenter
+```
+build ios appcenter app
+### ios build_testflight
+```
+fastlane ios build_testflight
+```
+build ios app for testflight
 ### ios release
 ```
 fastlane ios release
@@ -44,6 +54,16 @@ release to test flight
 fastlane ios release_to_appcenter
 ```
 build and upload iOS binaries to app center
+### ios device_registration
+```
+fastlane ios device_registration
+```
+register devices
+### ios upload_to_testflight
+```
+fastlane ios upload_to_testflight
+```
+upload iOS to test flight
 ### ios upload_to_appcenter
 ```
 fastlane ios upload_to_appcenter
