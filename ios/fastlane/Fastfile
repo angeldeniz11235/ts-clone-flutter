@@ -123,30 +123,7 @@ platform :ios do
 
     pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
     buildNumber = getBuildNumber(pubspec)
-    
-    # versionParts = pubspec["version"].to_s.split('.')
-    # begin  # "try" block
-    #   version = appcenter_fetch_version_number(
-    #     owner_name: "Codingjock-LLC",
-    #     app_name: "dev.jayhackett.blogdemo.ios",
-    #     version: pubspec["version"] #"a specific version to get the last release for" # optional, don't set this value to get the last upload of all versions
-    #   )
-    # rescue => ex # optionally: `rescue Exception => ex`
-    #   puts "error"
-    #   version = {
-    #     "version": "0.0.0"
-    #   }
-    # end 
-    # if pubspec["version"] === version["version"]
-    #   puts "increment_build_number_ios"
-    #   puts version["version"]
-    #   buildNumber = increment_build_number_ios(version, versionParts)
-    # else 
-    #   puts "set_new_build_number"
-    #   buildNumber = set_new_build_number(versionParts)
-    # end
     puts "running flutter_build() for #{pubspec["version"]} (#{buildNumber})"
-
     gym(
       output_directory: "../build/ios/adhoc",
       xcargs: {
@@ -169,10 +146,6 @@ platform :ios do
       },
       export_method: "app-store"
     )
-    # flutter_build(
-    #   build: "ios",
-    #   # build_number: buildNumber
-    # )
   end
 
   desc "release to test flight"

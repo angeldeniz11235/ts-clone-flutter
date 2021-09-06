@@ -4,9 +4,9 @@ cd android
 bundle install
 cd ../ios
 bundle install
-cd ..
-flutter build
 
-flutter build apk
-cd android
-bundle exec fastlane deploy_appcenter
+cd ../android
+bundle exec fastlane android build_and_upload_to_appcenter
+
+cd ../ios
+bundle exec fastlane ios release_to_appcenter
