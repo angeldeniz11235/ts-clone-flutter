@@ -57,7 +57,35 @@ def increment_build_number_ios(version, versionParts)
   return buildNumber
 end
 
-def getBuildNumber(pubspec)
+def getTestFlightBuildNumber(pubspec)
+  # pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
+    versionParts = pubspec["version"].to_s.split('.')
+    latestVersionString = ""
+    begin  # "try" block
+      version = app_store_build_number(
+        live: false,
+        app_identifier: ENV['MATCH_APP_IDENTIFIER'],
+        initial_build_number: buildNumber
+        version: pubspec["version"]
+      )
+      puts version
+    rescue => ex # optionally: `rescue Exception => ex`
+      puts "error"
+      version = {
+        "version": "0.0.0"
+      }
+    end 
+    if pubspec["version"] === version["version"]
+      puts "increment_build_number_ios"
+      buildNumber = increment_build_number_ios(version, versionParts)
+    else 
+      puts "set_new_build_number"
+      buildNumber = set_new_build_number(versionParts)
+    end
+  return buildNumber
+end
+
+def getAppCenterBuildNumber(pubspec)
   # pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
     versionParts = pubspec["version"].to_s.split('.')
     latestVersionString = ""
@@ -122,7 +150,7 @@ platform :ios do
     appcenter_signing
 
     pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
-    buildNumber = getBuildNumber(pubspec)
+    buildNumber = getAppCenterBuildNumber(pubspec)
     puts "running flutter_build() for #{pubspec["version"]} (#{buildNumber})"
     gym(
       output_directory: "../build/ios/adhoc",
@@ -136,8 +164,11 @@ platform :ios do
   desc "build ios app for testflight"
   lane :build_testflight do
     pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
-    buildNumber = getBuildNumber(pubspec)
+    buildNumber = getTestFlightBuildNumber(pubspec)
     puts "running flutter_build() for #{pubspec["version"]} (#{buildNumber})"
+    
+    puts "testFlightBuildNumber:"
+    puts testFlightBuildNumber
     signing
     gym(
       output_directory: "../build/ios/appstore",
@@ -166,7 +197,7 @@ platform :ios do
   desc "upload iOS to test flight"
   lane :upload_to_testflight do
     pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
-    buildNumber = getBuildNumber(pubspec)
+    buildNumber = getAppCenterBuildNumber(pubspec)
     increment_build_number(
       build_number: buildNumber
     )
@@ -189,7 +220,7 @@ platform :ios do
   desc "upload iOS to app center"
   lane :upload_to_appcenter do
     pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
-    buildNumber = getBuildNumber(pubspec)
+    buildNumber = getAppCenterBuildNumber(pubspec)
     increment_build_number(
       build_number: buildNumber
     )
