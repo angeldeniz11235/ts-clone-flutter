@@ -44,11 +44,6 @@ build ios appcenter app
 fastlane ios build_testflight
 ```
 build ios app for testflight
-### ios release
-```
-fastlane ios release
-```
-release to test flight
 ### ios release_to_appcenter
 ```
 fastlane ios release_to_appcenter

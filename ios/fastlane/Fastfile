@@ -148,11 +148,6 @@ platform :ios do
     )
   end
 
-  desc "release to test flight"
-  lane :release do
-
-  end
-
   desc "build and upload iOS binaries to app center"
   lane :release_to_appcenter do
     build_appcenter
