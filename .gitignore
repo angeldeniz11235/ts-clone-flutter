@@ -119,3 +119,4 @@ build-iPhoneSimulator/
 
 # End of https://www.toptal.com/developers/gitignore/api/fastlane,ruby
 .env.secret
+ios/fastlane/AuthKey_GZXRRM9LG5.p8

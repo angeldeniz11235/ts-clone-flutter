@@ -5,7 +5,52 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: create_app_online" time="10.815258">
+      <testcase classname="fastlane.lanes" name="0: appcenter_fetch_version_number" time="0.429118">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: increment_build_number" time="0.436323">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: Switch to ios build_testflight lane" time="0.000171">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: appcenter_fetch_version_number" time="0.348388">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: Switch to ios signing lane" time="0.000389">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: sync_code_signing" time="4.232705">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: update_code_signing_settings" time="0.083137">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: gym" time="38.740056">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="8: app_store_connect_api_key" time="0.005763">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="9: pilot" time="917.881993">
         
       </testcase>
     
