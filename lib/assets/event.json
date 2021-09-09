@@ -1,0 +1,20 @@
+{
+	"id": "",
+	"address": {
+		"addressLine1": "",
+		"addressLine2": "",
+		"city": "",
+		"state": ""
+	},
+	"eventDateTime": "",
+	"opponent": {
+		"teamName": "",
+		"headCoach": ""
+	},
+	"confirmedList": [{
+		"firstName": "",
+		"lastName": ""
+	}]
+
+
+}
