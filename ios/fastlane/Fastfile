@@ -13,11 +13,121 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
-default_platform(:ios)
+# default_platform(:ios)
+
+# platform :ios do
+#   desc "Description of what the lane does"
+#   lane :custom_lane do
+#     # add actions here: https://docs.fastlane.tools/actions
+#   end
+# end
+
+
+require "yaml"
+
+def set_new_build_number(versionParts)
+  build = 1
+  major = Integer(versionParts[0]) === 0 ? "000" : (100 * (Integer(versionParts[0])))
+  minor = Integer(versionParts[1]) === 0 ? "000" : (100 * (Integer(versionParts[1])))
+  patch = Integer(versionParts[2]) === 0 ? "0001" : ( 1000 * (Integer(versionParts[2])) + build)
+  buildNumber = major.to_s + minor.to_s + patch.to_s
+  return buildNumber
+end
+
+def increment_build_number(version, versionParts)
+  major = Integer(versionParts[0]) === 0 ? "000" : (100 * (Integer(versionParts[0])))
+  minor = Integer(versionParts[1]) === 0 ? "000" : (100 * (Integer(versionParts[1])))
+  
+  patch_number_parts = version["build_number"].split(//).last(4)
+  real_patch_string = patch_number_parts.join
+  real_patch_number = Integer(real_patch_string)
+  patch_length = real_patch_number.to_s.length()
+  case patch_length
+  when 4
+    patch = real_patch_number === 0 ? "0000" : (real_patch_number + 1).to_s
+  when 3
+    patch = "0" + (real_patch_number + 1).to_s
+  when 2
+    patch = "00" + (real_patch_number + 1).to_s
+  when 1
+    patch = "000" + (real_patch_number + 1).to_s
+  end
+  buildNumber = major.to_s + minor.to_s + patch.to_s
+  return buildNumber
+end
+
+desc "Create on Developer Portal and App Store Connect"
+lane :create_app do
+  create_app_online # produce
+end
 
 platform :ios do
-  desc "Description of what the lane does"
-  lane :custom_lane do
-    # add actions here: https://docs.fastlane.tools/actions
+  desc "sync signing"
+  lane :signing do
+    sync_code_signing # match
   end
+
+  desc "build ios app"
+  lane :build do
+    pubspec = YAML.load_file('/Users/jayhackett/Documents/jayhackett-projects/dev_jayhackett_blogdemo/pubspec.yaml')
+    versionParts = pubspec["version"].to_s.split('.')
+    begin  # "try" block
+      version = appcenter_fetch_version_number(
+        owner_name: "Codingjock-LLC",
+        app_name: "dev.jayhackett.blogdemo",
+        version: pubspec["version"] #"a specific version to get the last release for" # optional, don't set this value to get the last upload of all versions
+      )
+    rescue => ex # optionally: `rescue Exception => ex`
+      puts "error"
+      version = {
+        "version": "0.0.0"
+      }
+    end 
+    if pubspec["version"] === version["version"]
+      puts "increment_build_number"
+      buildNumber = increment_build_number(version, versionParts)
+    else 
+      puts "set_new_build_number"
+      buildNumber = set_new_build_number(versionParts)
+    end
+    puts "running flutter_build() for #{pubspec["version"]} (#{buildNumber})"
+    flutter_build(
+      build: "ios",
+      # build_number: buildNumber
+    )
+  end
+
+  desc "release to test flight"
+  lane :release do
+
+  end
+
+  desc "build and upload iOS binaries to app center"
+  lane :release_to_appcenter do
+    build
+    upload_to_appcenter
+    # appcenter_upload(
+    #   # APPCENTER_API_TOKEN set in .env file
+    #   owner_name: "Codingjock-LLC", # owner name to be shown in appcenter for the app
+    #   owner_type: "user", # Default is user - set to organization for appcenter organizations
+    #   app_name: "dev.jayhackett.blogdemo", # app name  is the name of your app registered with android
+    #   file: "../build/app/outputs/flutter-apk/app-release.apk", # location of the apk that was built for upload
+    #   notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
+    # )
+  end
+
+  desc "upload iOS to app center"
+  lane :upload_to_appcenter do
+    # appcenter_upload(
+    #   # APPCENTER_API_TOKEN set in .env file
+    #   owner_name: "Codingjock-LLC", # owner name to be shown in appcenter for the app
+    #   owner_type: "user", # Default is user - set to organization for appcenter organizations
+    #   app_name: "dev.jayhackett.blogdemo", # app name  is the name of your app registered with android
+    #   file: "../build/app/outputs/flutter-apk/app-release.apk", # location of the apk that was built for upload
+    #   notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
+    # )
+  end
+
+  
+
 end
