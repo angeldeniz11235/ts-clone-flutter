@@ -2,21 +2,21 @@ import 'address.dart';
 import 'team_detail.dart';
 import 'team_member.dart';
 
-class Event {
+class EventDetail {
   String? id;
   Address? address;
   String? eventDateTime;
   TeamDetail? opponent;
   List<TeamMember>? confirmedList;
 
-  Event(
+  EventDetail(
       {this.id,
       this.address,
       this.eventDateTime,
       this.opponent,
       this.confirmedList});
 
-  Event.fromJson(Map<String, dynamic> json) {
+  EventDetail.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     address =
         json['address'] != null ? new Address.fromJson(json['address']) : null;

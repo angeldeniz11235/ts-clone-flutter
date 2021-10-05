@@ -1,15 +1,34 @@
 {
 	"name": "",
 	"mascot": "",
-	"headCoach": [{
-		"firstName": "",
-		"lastName": "",
-		"primaryEmail": "",
-		"secondaryEmail": "",
-		"cellPhone": "",
-		"secondaryPhone": ""
-		
-	}],
-	"assistantCoach": [{}],
-	"teamMembers": [{}]
+	"headCoach": [
+		{
+			"firstName": "",
+			"lastName": "",
+			"primaryEmail": "",
+			"secondaryEmail": "",
+			"cellPhone": "",
+			"secondaryPhone": ""
+		}
+	],
+	"assistantCoach": [
+		{
+			"firstName": "",
+			"lastName": "",
+			"primaryEmail": "",
+			"secondaryEmail": "",
+			"cellPhone": "",
+			"secondaryPhone": ""
+		}
+	],
+	"teamMembers": [
+		{
+			"firstName": "",
+			"lastName": "",
+			"primaryEmail": "",
+			"secondaryEmail": "",
+			"cellPhone": "",
+			"secondaryPhone": ""
+		}
+	]
 }

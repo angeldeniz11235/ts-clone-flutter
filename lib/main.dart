@@ -1,14 +1,15 @@
-import 'package:dev_jayhackett_blogdemo/views/page/home_page.dart';
-import 'package:dev_jayhackett_blogdemo/views/page/login_page.dart';
-import 'package:dev_jayhackett_blogdemo/views/page/login_page_inheritedwidget.dart';
-import 'package:dev_jayhackett_blogdemo/views/page/login_page_setstate.dart';
+import 'package:dev_jayhackett_blogdemo/router/app_route_parser.dart';
+import 'package:dev_jayhackett_blogdemo/router/router_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'bloc/app_bloc_provider.dart';
-
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(providers: [
+    Provider.value(value: AppRouteInformationParser()),
+    ChangeNotifierProvider(
+      create: (_) => AppRouterDelegate(),
+    ),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -20,16 +21,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: MultiProvider(
-          providers: [Provider.value(value: AppBloc())],
-          child: LoginPage(
-            appName: 'App Name',
-          ),
-        ));
+    return MaterialApp.router(
+      routeInformationParser:
+          Provider.of<AppRouteInformationParser>(context, listen: false),
+      routerDelegate: Provider.of<AppRouterDelegate>(context, listen: false),
+      title: 'Flutter Demo',
+      theme: ThemeData.dark(),
+    );
   }
 }
