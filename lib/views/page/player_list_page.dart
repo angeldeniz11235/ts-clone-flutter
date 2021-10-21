@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 class PlayerListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<TeamMember> teamMembers = [];
-
+    List<TeamMember> teamMembers =
+        []; //var players = PlayerService.getTeamMembers();
     return ListView.separated(
         padding: EdgeInsets.all(16.0),
-        itemCount: 10,
+        itemCount: 10, //players.length,
         separatorBuilder: (context, i) => Divider(),
         itemBuilder: (context, i) {
           Map<String, dynamic> playerJson = {
@@ -31,7 +31,9 @@ class PlayerListPage extends StatelessWidget {
               }
             ]
           };
-          teamMembers..add(TeamMember.fromJson(playerJson));
+          teamMembers
+            ..add(TeamMember.fromJson(
+                playerJson)); // TeamMember.fromJson(players[i])
           return PlayerListItem(teamMember: teamMembers[i]);
         });
   }

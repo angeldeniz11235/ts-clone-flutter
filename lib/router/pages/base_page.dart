@@ -9,7 +9,7 @@ class BasePage extends Page {
         settings: this,
         pageBuilder: (context, animation, secondaryAnimation) {
           return FadeTransition(
-            opacity: animation.drive(CurveTween(curve: Curves.easeIn)),
+            opacity: animation.drive(CurveTween(curve: Curves.bounceIn)),
             child: this.child,
           );
         });
