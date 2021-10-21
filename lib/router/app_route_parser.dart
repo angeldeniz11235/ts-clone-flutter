@@ -11,6 +11,7 @@ class AppRouteInformationParser extends RouteInformationParser<AppRoutePath> {
     final uri = Uri.tryParse(routeInformation.location as String);
     if (uri == null || uri.pathSegments.isEmpty) {
       print("no segments");
+
       return HomeRoutePath();
     }
     switch (uri.pathSegments[0]) {

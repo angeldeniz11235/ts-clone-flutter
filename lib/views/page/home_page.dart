@@ -1,5 +1,7 @@
 import 'package:dev_jayhackett_blogdemo/router/router_delegate.dart';
+import 'package:dev_jayhackett_blogdemo/router/routes/add_team_route_path.dart';
 import 'package:dev_jayhackett_blogdemo/views/components/buttons/quick_action_button.dart';
+import 'package:dev_jayhackett_blogdemo/views/page/add_team_page.dart';
 import 'package:dev_jayhackett_blogdemo/views/page/location_select_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -122,6 +124,10 @@ class QuickAddMenu extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           QuickAddButton(
+            onPressed: () {
+              Provider.of<AppRouterDelegate>(context, listen: false)
+                  .navigateTo(AddTeamRoutePath());
+            },
             icon: Icon(Icons.add_box),
             helpText: "Add Team",
             content: Container(
