@@ -1,8 +1,14 @@
 import 'dart:developer';
 import 'package:dev_jayhackett_blogdemo/API/database/database.dart';
+import 'package:dev_jayhackett_blogdemo/models/coach.dart';
+import 'package:dev_jayhackett_blogdemo/models/team_detail.dart';
+import 'package:dev_jayhackett_blogdemo/router/router_delegate.dart';
+import 'package:dev_jayhackett_blogdemo/router/routes/team_detail_route_path.dart';
+import 'package:dev_jayhackett_blogdemo/views/page/team_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:provider/provider.dart';
 
 class AddTeamPage extends StatelessWidget {
   final _formKey = GlobalKey<FormBuilderState>();
@@ -17,7 +23,7 @@ class AddTeamPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               FormBuilderTextField(
-                name: "team_name",
+                name: "teamName",
                 decoration: InputDecoration(
                   hintText: 'Team Name',
                   contentPadding:
@@ -38,7 +44,7 @@ class AddTeamPage extends StatelessWidget {
                 ),
               ),
               FormBuilderTextField(
-                name: "head_coach",
+                name: "headCoach",
                 decoration: InputDecoration(
                   hintText: 'Head Coach',
                   contentPadding:
@@ -59,7 +65,7 @@ class AddTeamPage extends StatelessWidget {
                 ),
               ),
               FormBuilderTextField(
-                name: "assistant_coach",
+                name: "assistantCoach",
                 decoration: InputDecoration(
                   hintText: 'Assistant Coach',
                   contentPadding:
@@ -103,8 +109,25 @@ class AddTeamPage extends StatelessWidget {
               TextButton(
                   onPressed: () {
                     _formKey.currentState!.save();
+                    var teamDetail = TeamDetail(
+                      name: _formKey.currentState!.value['name'],
+                      mascot: _formKey.currentState!.value['mascot'],
+                      headCoach: [
+                        Coach(
+                            firstName:
+                                _formKey.currentState!.value['headCoach'])
+                      ],
+                      assistantCoach: [
+                        Coach(
+                            firstName:
+                                _formKey.currentState!.value['assistantCoach'])
+                      ],
+                    );
                     SaveTeam(_formKey.currentState!.value);
                     log(_formKey.currentState!.value.toString());
+                    Provider.of<AppRouterDelegate>(context, listen: false)
+                        .navigateTo(
+                            TeamDetailRoutePath({"team": teamDetail.toJson()}));
                   },
                   child: Text("Submit")),
             ],

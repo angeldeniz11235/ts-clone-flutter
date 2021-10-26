@@ -31,9 +31,12 @@ class PlayerListPage extends StatelessWidget {
               }
             ]
           };
-          teamMembers
-            ..add(TeamMember.fromJson(
-                playerJson)); // TeamMember.fromJson(players[i])
+          TeamMember()
+            ..firstName = "sdfsdf"
+            ..lastName = "dsfsdf"
+            ..guardian;
+          teamMembers.add(TeamMember.fromJson(
+              playerJson)); // TeamMember.fromJson(players[i])
           return PlayerListItem(teamMember: teamMembers[i]);
         });
   }
