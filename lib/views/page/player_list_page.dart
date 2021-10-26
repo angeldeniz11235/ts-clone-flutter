@@ -31,10 +31,7 @@ class PlayerListPage extends StatelessWidget {
               }
             ]
           };
-          TeamMember()
-            ..firstName = "sdfsdf"
-            ..lastName = "dsfsdf"
-            ..guardian;
+
           teamMembers.add(TeamMember.fromJson(
               playerJson)); // TeamMember.fromJson(players[i])
           return PlayerListItem(teamMember: teamMembers[i]);
