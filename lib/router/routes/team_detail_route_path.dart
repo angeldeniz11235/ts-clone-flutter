@@ -16,7 +16,8 @@ class TeamDetailRoutePath extends AppRoutePath {
 
   @override
   Widget Function(Map<String, dynamic>? args) get child =>
-      (args) => TeamDetailsPage(team: TeamDetail.fromJson(args?['team']));
+      (args) => TeamDetailsPage(
+          team: TeamDetail.fromJson(args?['team']), data: args?['data']);
 
   @override
   int get routeIndex => 2;
