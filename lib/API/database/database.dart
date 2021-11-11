@@ -23,6 +23,25 @@ Future<Map<String, dynamic>> saveTeam(Map<String, dynamic> data) async {
   return json.decode(result);
 }
 
+Future<Map<String, dynamic>> getTeam(String id) async {
+  String result;
+
+  Response response = await http.get(
+    Uri.parse("http://" +
+        DBconfig.get_API_IP() +
+        ":" +
+        DBconfig.get_API_PORT() +
+        "/api/v1/teams/" +
+        id),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'accept': 'application/json'
+    },
+  );
+  result = (response.body);
+  return json.decode(result);
+}
+
 Future<List<Map<String, dynamic>>> getPlayers() async {
   String result;
   List<Map<String, dynamic>> items = [];

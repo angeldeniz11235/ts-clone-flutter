@@ -5,7 +5,7 @@ import 'package:dev_jayhackett_blogdemo/models/coach.dart';
 import 'package:dev_jayhackett_blogdemo/models/team_detail.dart';
 import 'package:dev_jayhackett_blogdemo/router/router_delegate.dart';
 import 'package:dev_jayhackett_blogdemo/router/routes/team_detail_route_path.dart';
-import 'package:dev_jayhackett_blogdemo/views/page/team_detail_page.dart';
+import 'package:dev_jayhackett_blogdemo/views/page/select_teamMembers_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';

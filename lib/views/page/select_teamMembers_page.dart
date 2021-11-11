@@ -4,17 +4,19 @@ import 'package:dev_jayhackett_blogdemo/API/database/database.dart';
 import 'package:dev_jayhackett_blogdemo/models/person.dart';
 import 'package:dev_jayhackett_blogdemo/models/team_detail.dart';
 import 'package:dev_jayhackett_blogdemo/models/team_member.dart';
+import 'package:dev_jayhackett_blogdemo/router/router_delegate.dart';
+import 'package:dev_jayhackett_blogdemo/router/routes/team_information_route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TeamDetailsPage extends StatefulWidget {
+class SelectTeamMembersPage extends StatefulWidget {
   final TeamDetail? team;
   final String? data;
 
-  TeamDetailsPage({this.team, this.data});
+  SelectTeamMembersPage({this.team, this.data});
 
   @override
-  State<TeamDetailsPage> createState() => _TeamDetailsPageState();
+  State<SelectTeamMembersPage> createState() => _SelectTeamMembersPageState();
 }
 
 //class to handle what happens when a teamMember is tapped on the list
@@ -54,12 +56,21 @@ class SelectedTeamMembers extends ChangeNotifier {
   }
 }
 
-class _TeamDetailsPageState extends State<TeamDetailsPage> {
+class _SelectTeamMembersPageState extends State<SelectTeamMembersPage> {
   List<Map<String, dynamic>>? teamMemberJson;
   List<Map<String, dynamic>>? personJson;
   Person? person;
   TeamMember? teamMember;
   List<TeamMember>? teamMemberList;
+
+  //get data from the widget.data
+  int getTeamID() {
+    if (widget.data != null) {
+      return json.decode(widget.data!)!['teamID'];
+    } else {
+      return -1;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,16 +174,21 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                 child: TextButton(
                                   child: Text('Submit'),
                                   onPressed: () {
+                                    var teamID =
+                                        json.decode(widget.data!)['data'];
                                     //update selectedPlayers team field to this team
                                     Provider.of<SelectedTeamMembers>(context,
                                             listen: false)
                                         .getSelectedPlayers
                                         .forEach((p) {
-                                      p.team = widget.team?.id;
+                                      p.team = teamID;
                                       updateTeamMember(
                                           p.toJson(), p.id.toString());
                                     });
-                                    Navigator.pop(context);
+                                    Provider.of<AppRouterDelegate>(context,
+                                            listen: false)
+                                        .navigateTo(TeamInformationRoutePath(
+                                            {"teamID": teamID}));
                                   },
                                 ),
                               ),
