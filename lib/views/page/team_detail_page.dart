@@ -17,38 +17,61 @@ class TeamDetailsPage extends StatefulWidget {
   State<TeamDetailsPage> createState() => _TeamDetailsPageState();
 }
 
-class SelectedPlayers extends ChangeNotifier {
-  List<String> _selectedPlayers = [];
+//class to handle what happens when a teamMember is tapped on the list
+class SelectedTeamMembers extends ChangeNotifier {
+  List<TeamMember> _selectedTeamMembers = [];
 
-  List<String> get getSelectedPlayers => _selectedPlayers;
+  List<TeamMember> get getSelectedPlayers => _selectedTeamMembers;
 
-  changeSelectedPlayer(String player) {
-    if (_selectedPlayers.contains(player)) {
-      _selectedPlayers.remove(player);
+  //check if a teamMember is already selected
+  bool isSelected(TeamMember teamMember) {
+    if (this
+            .getSelectedPlayers
+            .firstWhere((p) => p.id == teamMember.id,
+                //return a dummy Teammember if not found
+                orElse: () => TeamMember(
+                    id: -1, //dummyid
+                    guardian1: null,
+                    guardian2: null,
+                    personalInfo: null,
+                    position: '',
+                    team: null))
+            .id !=
+        -1) {
+      return true;
     } else {
-      _selectedPlayers.add(player);
+      return false;
+    }
+  }
+
+  changeSelectedPlayer(TeamMember selectedTeamMember) {
+    if (this.isSelected(selectedTeamMember)) {
+      _selectedTeamMembers.removeWhere((p) => p.id == selectedTeamMember.id);
+    } else {
+      _selectedTeamMembers.add(selectedTeamMember);
     }
     notifyListeners();
   }
 }
 
 class _TeamDetailsPageState extends State<TeamDetailsPage> {
-  List<Map<String, dynamic>>? players;
-  List<Map<String, dynamic>>? persons;
+  List<Map<String, dynamic>>? teamMemberJson;
+  List<Map<String, dynamic>>? personJson;
   Person? person;
-  TeamMember? player;
+  TeamMember? teamMember;
+  List<TeamMember>? teamMemberList;
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => SelectedPlayers(),
-      child: FutureBuilder(
+    return ChangeNotifierProvider<SelectedTeamMembers>(
+      create: (context) => SelectedTeamMembers(),
+      child: FutureBuilder<List>(
           future: Future.wait([getPlayers(), getPersons()]),
           builder:
               (BuildContext context, AsyncSnapshot<List<dynamic>>? snapshot) {
-            players = snapshot?.data?[0];
-            persons = snapshot?.data?[1];
-            return players == null
+            teamMemberJson = snapshot?.data?[0];
+            personJson = snapshot?.data?[1];
+            return teamMemberJson == null
                 ? Container()
                 : Container(
                     padding: const EdgeInsets.all(8.0),
@@ -70,25 +93,29 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                               Text("Mascot: ${widget.team?.mascot}"),
                               Expanded(
                                   child: ListView.builder(
-                                      itemCount:
-                                          players == null ? 0 : players?.length,
+                                      itemCount: teamMemberJson == null
+                                          ? 0
+                                          : teamMemberJson?.length,
                                       itemBuilder:
                                           (BuildContext context, int index) {
-                                        person = Person.fromJson(persons!
+                                        person = Person.fromJson(personJson!
                                             .firstWhere((p) =>
                                                 p["ID"] ==
-                                                players?.elementAt(
+                                                teamMemberJson?.elementAt(
                                                     index)["personalInfo"]));
-                                        player = TeamMember.fromJson(
-                                            players!.elementAt(index));
+                                        teamMember = TeamMember.fromJson(
+                                            teamMemberJson!.elementAt(index));
 
                                         return GestureDetector(
                                           onTap: () {
-                                            Provider.of<SelectedPlayers>(
+                                            //if player is not null, add player to teamMembers list
+                                            Provider.of<SelectedTeamMembers>(
                                                     context,
                                                     listen: false)
                                                 .changeSelectedPlayer(
-                                                    players![index].toString());
+                                                    TeamMember.fromJson(
+                                                        teamMemberJson![
+                                                            index]));
                                           },
                                           child: new Card(
                                             child: Row(
@@ -101,23 +128,26 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                                 new Container(
                                                   padding:
                                                       const EdgeInsets.all(8.0),
-                                                  child: Provider.of<
-                                                                  SelectedPlayers>(
-                                                              context,
-                                                              listen: true)
-                                                          .getSelectedPlayers
-                                                          .contains(
-                                                              players![index]
-                                                                  .toString())
-                                                      ? Icon(
-                                                          Icons.check,
-                                                          color: Colors.green,
-                                                        )
-                                                      : Icon(
-                                                          Icons
-                                                              .check_box_outline_blank,
-                                                          color: Colors.grey,
-                                                        ),
+                                                  child:
+                                                      //check if selected player exists in selectedPlayers list
+                                                      Provider.of<SelectedTeamMembers>(
+                                                                  context,
+                                                                  listen: true)
+                                                              .isSelected(TeamMember
+                                                                  .fromJson(
+                                                                      teamMemberJson![
+                                                                          index]))
+                                                          ? Icon(
+                                                              Icons.check_box,
+                                                              color:
+                                                                  Colors.green,
+                                                            )
+                                                          : Icon(
+                                                              Icons
+                                                                  .check_box_outline_blank,
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
                                                 ),
                                                 new Text((person?.firstName ??
                                                         '') +
@@ -127,7 +157,25 @@ class _TeamDetailsPageState extends State<TeamDetailsPage> {
                                             ),
                                           ),
                                         );
-                                      }))
+                                      })),
+                              //submit button
+                              Container(
+                                child: TextButton(
+                                  child: Text('Submit'),
+                                  onPressed: () {
+                                    //update selectedPlayers team field to this team
+                                    Provider.of<SelectedTeamMembers>(context,
+                                            listen: false)
+                                        .getSelectedPlayers
+                                        .forEach((p) {
+                                      p.team = widget.team?.id;
+                                      updateTeamMember(
+                                          p.toJson(), p.id.toString());
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ),
                             ],
                           ),
                         ),

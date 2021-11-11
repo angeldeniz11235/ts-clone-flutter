@@ -18,9 +18,9 @@ class PlayerDetailsPage extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("${teamMember?.firstName} ${teamMember?.lastName}"),
+                  //Text("${teamMember?.firstName} ${teamMember?.lastName}"),
                   SizedBox(height: 4.0),
-                  Text("# ${teamMember?.number.toString()}"),
+                  //Text("# ${teamMember?.number.toString()}"),
                 ],
               ),
             ],
@@ -33,7 +33,7 @@ class PlayerDetailsPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Birthday"),
-              Text("${teamMember?.birthDate.toString()}")
+              //Text("${teamMember?.birthDate.toString()}")
             ],
           ),
         ),
@@ -42,7 +42,7 @@ class PlayerDetailsPage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [Text("Gender"), Text("${teamMember?.gender}")],
+            //children: [Text("Gender"), Text("${teamMember?.gender}")],
           ),
         ),
         Divider(),
@@ -60,7 +60,7 @@ class PlayerDetailsPage extends StatelessWidget {
           // physics: ScrollPhysics,
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: teamMember?.guardian?.length ?? 2,
+          //itemCount: teamMember?.guardian?.length ?? 2,
           itemBuilder: (BuildContext context, int index) {
             return Container(
               padding: EdgeInsets.all(8.0),
@@ -70,10 +70,10 @@ class PlayerDetailsPage extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                          "${teamMember?.guardian?[index].firstName} ${teamMember?.guardian?[index].lastName}"),
-                      SizedBox(height: 4.0),
-                      Text("${teamMember?.guardian?[index].primaryEmail}"),
+                      // Text(
+                      //     "${teamMember?.guardian?[index].firstName} ${teamMember?.guardian?[index].lastName}"),
+                      // SizedBox(height: 4.0),
+                      // Text("${teamMember?.guardian?[index].primaryEmail}"),
                     ],
                   ),
                   IconButton(onPressed: () {}, icon: Icon(Icons.email))

@@ -53,9 +53,9 @@ class PlayerListItem extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("${teamMember.firstName} ${teamMember.lastName}"),
-            SizedBox(height: 4.0),
-            Text("# ${teamMember.number.toString()}"),
+            // Text("${teamMember.firstName} ${teamMember.lastName}"),
+            // SizedBox(height: 4.0),
+            // Text("# ${teamMember.number.toString()}"),
           ],
         ),
         trailing: Icon(Icons.arrow_right));

@@ -1,39 +1,53 @@
+// To parse this JSON data, do
+//
+//     final person = personFromJson(jsonString);
+
+import 'package:meta/meta.dart';
+import 'dart:convert';
+
+Person personFromJson(String str) => Person.fromJson(json.decode(str));
+
+String personToJson(Person data) => json.encode(data.toJson());
+
 class Person {
+  Person({
+    @required this.id,
+    @required this.firstName,
+    @required this.lastName,
+    @required this.email,
+    @required this.address,
+    @required this.phone,
+    @required this.dateOfBirth,
+  });
+
+  int? id;
   String? firstName;
   String? lastName;
-  String? primaryEmail;
-  String? secondaryEmail;
-  String? cellPhone;
-  String? secondaryPhone;
-  String? gender;
+  String? email;
+  int? address;
+  String? phone;
+  DateTime? dateOfBirth;
 
-  Person(
-      {this.firstName,
-      this.lastName,
-      this.primaryEmail,
-      this.secondaryEmail,
-      this.cellPhone,
-      this.secondaryPhone,
-      this.gender});
+  factory Person.fromJson(Map<String, dynamic> json) => Person(
+        id: json["ID"],
+        firstName: json["firstName"],
+        lastName: json["lastName"],
+        email: json["email"],
+        address: json["address"],
+        phone: json["phone"],
+        dateOfBirth: json["dateOfBirth"] == null
+            ? null
+            : DateTime.parse(json["dateOfBirth"]),
+      );
 
-  Person.fromJson(Map<String, dynamic> json) {
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    primaryEmail = json['primaryEmail'];
-    secondaryEmail = json['secondaryEmail'];
-    cellPhone = json['cellPhone'];
-    secondaryPhone = json['secondaryPhone'];
-    gender = json['gender'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['firstName'] = this.firstName;
-    data['lastName'] = this.lastName;
-    data['primaryEmail'] = this.primaryEmail;
-    data['secondaryEmail'] = this.secondaryEmail;
-    data['cellPhone'] = this.cellPhone;
-    data['secondaryPhone'] = this.secondaryPhone;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "ID": id,
+        "firstName": firstName,
+        "lastName": lastName,
+        "email": email,
+        "address": address,
+        "phone": phone,
+        "dateOfBirth":
+            "${dateOfBirth?.year.toString().padLeft(4, '0')}-${dateOfBirth?.month.toString().padLeft(2, '0')}-${dateOfBirth?.day.toString().padLeft(2, '0')}",
+      };
 }

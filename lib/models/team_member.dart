@@ -1,28 +1,47 @@
-import 'package:dev_jayhackett_blogdemo/models/person.dart';
+// To parse this JSON data, do
+//
+//     final teamMember = teamMemberFromJson(jsonString);
 
-class TeamMember extends Person {
-  int? number;
-  List<Guardian>? guardian;
+import 'package:meta/meta.dart';
+import 'dart:convert';
 
-  DateTime? birthDate;
-  TeamMember();
-  TeamMember.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    this.number = json["number"];
-    this.firstName = json["firstName"] == null
-        ? "firstName${this.number}"
-        : json["firstName"];
-    this.birthDate = DateTime.now();
-    List<Guardian> guardians = [];
-    if (json["guardian"] != null && json["guardian"]?.length > 0) {
-      for (var item in json["guardian"]) {
-        guardians.add(Guardian.fromJson(item));
-      }
-    }
-    this.guardian = guardians;
-  }
-}
+TeamMember teamMemberFromJson(String str) =>
+    TeamMember.fromJson(json.decode(str));
 
-class Guardian extends Person {
-  Guardian();
-  Guardian.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+String teamMemberToJson(TeamMember data) => json.encode(data.toJson());
+
+class TeamMember {
+  TeamMember({
+    @required this.id,
+    @required this.personalInfo,
+    @required this.team,
+    @required this.position,
+    @required this.guardian1,
+    @required this.guardian2,
+  });
+
+  int? id;
+  int? personalInfo;
+  int? team;
+  String? position;
+  int? guardian1;
+  int? guardian2;
+
+  factory TeamMember.fromJson(Map<String, dynamic> json) => TeamMember(
+        id: json["ID"],
+        personalInfo: json["personalInfo"],
+        team: json["team"],
+        position: json["position"],
+        guardian1: json["guardian1"],
+        guardian2: json["guardian2"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "ID": id,
+        "personalInfo": personalInfo,
+        "team": team,
+        "position": position,
+        "guardian1": guardian1,
+        "guardian2": guardian2,
+      };
 }
