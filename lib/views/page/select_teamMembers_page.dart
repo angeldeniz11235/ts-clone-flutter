@@ -74,6 +74,7 @@ class _SelectTeamMembersPageState extends State<SelectTeamMembersPage> {
 
   @override
   Widget build(BuildContext context) {
+    var teamID = getTeamID();
     return ChangeNotifierProvider<SelectedTeamMembers>(
       create: (context) => SelectedTeamMembers(),
       child: FutureBuilder<List>(
@@ -174,8 +175,8 @@ class _SelectTeamMembersPageState extends State<SelectTeamMembersPage> {
                                 child: TextButton(
                                   child: Text('Submit'),
                                   onPressed: () {
-                                    var teamID =
-                                        json.decode(widget.data!)['data'];
+                                    // teamID =
+                                    //     json.decode(widget.data!)['data'];
                                     //update selectedPlayers team field to this team
                                     Provider.of<SelectedTeamMembers>(context,
                                             listen: false)
@@ -187,8 +188,17 @@ class _SelectTeamMembersPageState extends State<SelectTeamMembersPage> {
                                     });
                                     Provider.of<AppRouterDelegate>(context,
                                             listen: false)
-                                        .navigateTo(TeamInformationRoutePath(
-                                            {"teamID": teamID}));
+                                        .navigateTo(TeamInformationRoutePath({
+                                      //convert teamID to an inteager
+                                      'teamID': teamID.toInt(),
+                                      "data": json.encode(
+                                          Provider.of<SelectedTeamMembers>(
+                                                  context,
+                                                  listen: false)
+                                              .getSelectedPlayers
+                                              .map((e) => e.toJson())
+                                              .toList())
+                                    }));
                                   },
                                 ),
                               ),

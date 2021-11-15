@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dev_jayhackett_blogdemo/models/team_member.dart';
 import 'package:dev_jayhackett_blogdemo/router/routes/app_route_path.dart';
 import 'package:dev_jayhackett_blogdemo/views/page/team_information_page.dart';
 import 'package:flutter/foundation.dart';
@@ -16,6 +19,10 @@ class TeamInformationRoutePath extends AppRoutePath {
   @override
   Widget Function(Map<String, dynamic>? args) get child =>
       (args) => TeamInformationPage(
+            //convert json.decode(args?["data"]) to List<Map<String,dynamic>>
+            data: (json.decode(args?["data"]) as List<dynamic>)
+                .map((dynamic item) => TeamMember.fromJson(item))
+                .toList(),
             teamID: args?["teamID"],
           );
 

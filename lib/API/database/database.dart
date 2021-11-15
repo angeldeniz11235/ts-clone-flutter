@@ -109,3 +109,48 @@ Future<Map<String, dynamic>> updateTeamMember(
   result = (response.body);
   return json.decode(result);
 }
+
+//get all teammembers from database for a team
+Future<List<Map<String, dynamic>>> getTeamMembers(String teamID) async {
+  String result;
+  List<Map<String, dynamic>> items = [];
+
+  Response response = await http.get(
+    Uri.parse("http://" +
+        DBconfig.get_API_IP() +
+        ":" +
+        DBconfig.get_API_PORT() +
+      "/api/v1/teams/get-all-players/" +
+        teamID),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'accept': 'application/json'
+    },
+  );
+  result = (response.body);
+  (json.decode(result))?.forEach((element) {
+    var item = (Map<String, dynamic>.from(element));
+    items.add(item);
+  });
+  return items;
+}
+
+//get one person from database using id
+Future<Map<String, dynamic>> getPerson(String id) async {
+  String result;
+
+  Response response = await http.get(
+    Uri.parse("http://" +
+        DBconfig.get_API_IP() +
+        ":" +
+        DBconfig.get_API_PORT() +
+        "/api/v1/persons/" +
+        id),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'accept': 'application/json'
+    },
+  );
+  result = (response.body);
+  return json.decode(result);
+}
