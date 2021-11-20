@@ -64,6 +64,14 @@ class AppRouterDelegate extends RouterDelegate<AppRoutePath>
   Widget build(BuildContext context) {
     return Navigator(
       key: navigatorKey,
+      observers: [
+        HeroController(
+          createRectTween: (begin, end) => MaterialRectArcTween(
+            begin: begin,
+            end: end,
+          ),
+        )
+      ],
       pages: [
         BasePage(child: Consumer<AppRouterDelegate>(
           builder: (context, routePath, oldWidget) {

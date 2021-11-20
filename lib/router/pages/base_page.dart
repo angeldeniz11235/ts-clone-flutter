@@ -7,9 +7,16 @@ class BasePage extends Page {
   Route createRoute(BuildContext context) {
     return PageRouteBuilder(
         settings: this,
+        /* transitionDuration: const Duration(milliseconds: 10000),*/
         pageBuilder: (context, animation, secondaryAnimation) {
           return FadeTransition(
-            opacity: animation.drive(CurveTween(curve: Curves.bounceIn)),
+            opacity: /*animation.drive(CurveTween(curve: Curves.bounceIn)),*/
+                Tween<double>(begin: 0.0, end: 1.0).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+            ),
             child: this.child,
           );
         });

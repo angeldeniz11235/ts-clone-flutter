@@ -28,21 +28,24 @@ class _TeamInfomationPageState extends State<TeamInformationPage> {
   }
 
   Future<List<Map<String, dynamic>>> getTeamMembersFromDB() async {
-    List<Map<String, dynamic>> teamMemberList = await getTeamMembers(teamID);
-    List<Map<String, dynamic>> teamMembersResult = [];
-    teamMemberList.forEach((teamMember) async {
-      Map<String, dynamic> personalInfo =
-          await getPerson(teamMember['personalInfo']);
-      teamMembersResult.add({
-        'id': widget.teamID,
-        'firstName': personalInfo['firstName'],
-        'lastName': personalInfo['lastName'],
-        'address': personalInfo['address'],
-        'phone': personalInfo['phone'],
-        'dateOfBirth': personalInfo['dateOfBirth'],
-      });
-    });
-    return teamMembersResult;
+    return await getTeamMembersPersonalInfo(teamID);
+
+    // late List<Map<String, dynamic>> teamMembersResult=[];
+    // List<Map<String, dynamic>> teamMemberList = await getTeamMembers(teamID);
+
+    // teamMemberList.forEach((teamMember) async {
+    //   Map<String, dynamic> personalInfo =
+    //       await getPerson(teamMember['personalInfo']);
+    //   teamMembersResult.add({
+    //     'id': widget.teamID,
+    //     'firstName': personalInfo['firstName'],
+    //     'lastName': personalInfo['lastName'],
+    //     'address': personalInfo['address'],
+    //     'phone': personalInfo['phone'],
+    //     'dateOfBirth': personalInfo['dateOfBirth'],
+    //   });
+    // });
+    // return teamMembersResult;
   }
 
   @override
@@ -67,6 +70,9 @@ class _TeamInfomationPageState extends State<TeamInformationPage> {
                   child: Column(
                     children: <Widget>[
                       Text(snapshot.data![index]['firstName']),
+                      Text(snapshot.data![index]['lastName']),
+                      Text(snapshot.data![index]['phone']),
+                      Text(snapshot.data![index]['email']),
                     ],
                   ),
                 );

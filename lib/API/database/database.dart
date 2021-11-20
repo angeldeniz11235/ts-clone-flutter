@@ -120,7 +120,33 @@ Future<List<Map<String, dynamic>>> getTeamMembers(String teamID) async {
         DBconfig.get_API_IP() +
         ":" +
         DBconfig.get_API_PORT() +
-      "/api/v1/teams/get-all-players/" +
+        "/api/v1/teams/get-all-players/" +
+        teamID),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'accept': 'application/json'
+    },
+  );
+  result = (response.body);
+  (json.decode(result))?.forEach((element) {
+    var item = (Map<String, dynamic>.from(element));
+    items.add(item);
+  });
+  return items;
+}
+
+//get all team members pesonal info from all members in a team using team id
+Future<List<Map<String, dynamic>>> getTeamMembersPersonalInfo(
+    String teamID) async {
+  String result;
+  List<Map<String, dynamic>> items = [];
+
+  Response response = await http.get(
+    Uri.parse("http://" +
+        DBconfig.get_API_IP() +
+        ":" +
+        DBconfig.get_API_PORT() +
+        "/api/v1/teams/get-all-players-info/" +
         teamID),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',

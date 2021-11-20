@@ -123,22 +123,25 @@ class QuickAddMenu extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          QuickAddButton(
-            onPressed: () {
-              Provider.of<AppRouterDelegate>(context, listen: false)
-                  .navigateTo(AddTeamRoutePath());
-            },
-            icon: Icon(Icons.add_box),
-            helpText: "Add Team",
-            content: Container(
-              child: Form(
-                  child: Column(
-                children: [
-                  TextFormField(
-                    controller: _teamNameController,
-                  )
-                ],
-              )),
+          Hero(
+            tag: "add_team_button",
+            child: QuickAddButton(
+              onPressed: () {
+                Provider.of<AppRouterDelegate>(context, listen: false)
+                    .navigateTo(AddTeamRoutePath());
+              },
+              icon: Icon(Icons.add_box),
+              helpText: "Add Team",
+              content: Container(
+                child: Form(
+                    child: Column(
+                  children: [
+                    TextFormField(
+                      controller: _teamNameController,
+                    )
+                  ],
+                )),
+              ),
             ),
           ),
           QuickAddButton(
