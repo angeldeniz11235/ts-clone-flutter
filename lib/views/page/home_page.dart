@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dev_jayhackett_blogdemo/API/database/database.dart';
 import 'package:dev_jayhackett_blogdemo/router/router_delegate.dart';
 import 'package:dev_jayhackett_blogdemo/router/routes/add_team_route_path.dart';
 import 'package:dev_jayhackett_blogdemo/views/components/buttons/quick_action_button.dart';
@@ -124,11 +127,15 @@ class QuickAddMenu extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Hero(
-            tag: "add_team_button",
+            tag: "add_team_hero",
             child: QuickAddButton(
-              onPressed: () {
+              onPressed: () async {
+                List<Map<String, dynamic>> leagues = await getLeagues();
+                Map<String, dynamic> routeData = {
+                  "leagues": leagues,
+                };
                 Provider.of<AppRouterDelegate>(context, listen: false)
-                    .navigateTo(AddTeamRoutePath());
+                    .navigateTo(AddTeamRoutePath(routeData));
               },
               icon: Icon(Icons.add_box),
               helpText: "Add Team",

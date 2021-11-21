@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 class AddTeamRoutePath extends AppRoutePath {
   // @override
   // Widget Function([Map<String, dynamic>? args]) get child => PlayerListPage();
+  AddTeamRoutePath(Map<String, dynamic>? routeData)
+      : super(routeData: routeData);
   @override
   // TODO: implement routeIndex
   int get routeIndex => 2;
@@ -21,5 +23,5 @@ class AddTeamRoutePath extends AppRoutePath {
 
   @override
   Widget Function(Map<String, dynamic>? args) get child =>
-      (args) => AddTeamPage();
+      (args) => AddTeamPage(args?["leagues"]);
 }

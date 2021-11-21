@@ -180,3 +180,27 @@ Future<Map<String, dynamic>> getPerson(String id) async {
   result = (response.body);
   return json.decode(result);
 }
+
+//get all leagues from database
+Future<List<Map<String, dynamic>>> getLeagues() async {
+  String result;
+  List<Map<String, dynamic>> items = [];
+
+  Response response = await http.get(
+    Uri.parse("http://" +
+        DBconfig.get_API_IP() +
+        ":" +
+        DBconfig.get_API_PORT() +
+        "/api/v1/leagues/"),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'accept': 'application/json'
+    },
+  );
+  result = (response.body);
+  (json.decode(result))?.forEach((element) {
+    var item = (Map<String, dynamic>.from(element));
+    items.add(item);
+  });
+  return items;
+}

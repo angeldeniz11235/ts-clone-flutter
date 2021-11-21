@@ -11,7 +11,7 @@ class BasePage extends Page {
         pageBuilder: (context, animation, secondaryAnimation) {
           return FadeTransition(
             opacity: /*animation.drive(CurveTween(curve: Curves.bounceIn)),*/
-                Tween<double>(begin: 0.0, end: 1.0).animate(
+                Tween<double>(begin: 0.0, end: 5.0).animate(
               CurvedAnimation(
                 parent: animation,
                 curve: Curves.easeInOut,
