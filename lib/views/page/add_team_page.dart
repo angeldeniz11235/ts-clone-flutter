@@ -22,9 +22,16 @@ class AddTeamPage extends StatefulWidget {
 class _AddTeamPageState extends State<AddTeamPage> {
   final _formKey = GlobalKey<FormBuilderState>();
 
+  late List<DropdownMenuItem<String>> _dropdownMenuItems;
+
   @override
   void initState() {
-    log(widget.leagues.toString());
+    _dropdownMenuItems = widget.leagues
+        .map((league) => DropdownMenuItem<String>(
+              value: league['ID'].toString(),
+              child: Text(league['name']),
+            ))
+        .toList();
 
     super.initState();
   }
@@ -109,7 +116,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
                                   fillColor: Colors.red[900],
                                   filled: true,
                                   hintStyle: TextStyle(
-                                    color: Colors.white.withOpacity(.9),
+                                    color: Colors.white.withOpacity(.8),
                                   ),
                                   hintText: 'Team Name',
                                   contentPadding: EdgeInsets.symmetric(
@@ -144,7 +151,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
                                 decoration: InputDecoration(
                                   hintText: 'Mascot',
                                   hintStyle: TextStyle(
-                                    color: Colors.white.withOpacity(.9),
+                                    color: Colors.white.withOpacity(.8),
                                   ),
                                   fillColor: Colors.red.shade900,
                                   filled: true,
@@ -181,32 +188,11 @@ class _AddTeamPageState extends State<AddTeamPage> {
                                     hint: Text(
                                       'Select a League',
                                       style: TextStyle(
-                                        color: Colors.white.withOpacity(.9),
+                                        color: Colors.white.withOpacity(.8),
                                       ),
                                     ),
                                     name: "teamLeague",
-                                    items: [
-                                      DropdownMenuItem(
-                                        value: 'NFL',
-                                        child: Text('NFL'),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 'MLB',
-                                        child: Text('MLB'),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 'NHL',
-                                        child: Text('NHL'),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 'NBA',
-                                        child: Text('NBA'),
-                                      ),
-                                      DropdownMenuItem(
-                                        value: 'NCAA',
-                                        child: Text('NCAA'),
-                                      ),
-                                    ],
+                                    items: _dropdownMenuItems,
                                     decoration: InputDecoration(
                                         fillColor: Colors.red.shade900,
                                         filled: true,
@@ -248,8 +234,10 @@ class _AddTeamPageState extends State<AddTeamPage> {
                                       mascot: _formKey
                                           .currentState!.value['mascot'],
                                       hqAddress: 40,
-                                      league: _formKey
-                                          .currentState!.value['teamLeague'],
+                                      league: int.parse(
+                                        _formKey
+                                            .currentState!.value['teamLeague'],
+                                      ),
                                     );
                                     Map<String, dynamic> resData =
                                         await saveTeam(teamDetail.toJson());

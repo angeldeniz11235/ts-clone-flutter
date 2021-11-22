@@ -73,142 +73,198 @@ class _SelectTeamMembersPageState extends State<SelectTeamMembersPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
+        content: Text('Loading Team Members'),
+      ));
+    });
+  }
+
+  @override
+  @override
   Widget build(BuildContext context) {
     var teamID = getTeamID();
-    return ChangeNotifierProvider<SelectedTeamMembers>(
-      create: (context) => SelectedTeamMembers(),
-      child: FutureBuilder<List>(
-          future: Future.wait([getPlayers(), getPersons()]),
-          builder:
-              (BuildContext context, AsyncSnapshot<List<dynamic>>? snapshot) {
-            teamMemberJson = snapshot?.data?[0];
-            personJson = snapshot?.data?[1];
-            return teamMemberJson == null
-                ? Container()
-                : Container(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        // PlayerAvatar(),
-                        SizedBox(width: 16.0),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  width: 200,
-                                  child: Text(
-                                      json.decode(widget.data!)["message"])),
-                              Text(
-                                  "New Team ${widget.team?.name}, in League ${widget.team?.league} Created"),
-                              SizedBox(height: 10.0),
-                              Text("Mascot: ${widget.team?.mascot}"),
-                              Expanded(
-                                  child: ListView.builder(
-                                      itemCount: teamMemberJson == null
-                                          ? 0
-                                          : teamMemberJson?.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        person = Person.fromJson(personJson!
-                                            .firstWhere((p) =>
-                                                p["ID"] ==
-                                                teamMemberJson?.elementAt(
-                                                    index)["personalInfo"]));
-                                        teamMember = TeamMember.fromJson(
-                                            teamMemberJson!.elementAt(index));
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: Image(
+                    image: AssetImage('lib/assets/img/uwp128885_2.jpg'),
+                  ).image),
+            ),
+            child: ChangeNotifierProvider<SelectedTeamMembers>(
+              create: (context) => SelectedTeamMembers(),
+              child: FutureBuilder<List>(
+                  future: Future.wait([getPlayers(), getPersons()]),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<dynamic>>? snapshot) {
+                    teamMemberJson = snapshot?.data?[0];
+                    personJson = snapshot?.data?[1];
+                    return teamMemberJson == null
+                        ? Container()
+                        : Container(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                // PlayerAvatar(),
+                                SizedBox(width: 16.0),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          width: 200,
+                                          child: Text(json.decode(
+                                              widget.data!)["message"])),
+                                      Text(
+                                          "New Team ${widget.team?.name}, in League ${widget.team?.league} Created"),
+                                      SizedBox(height: 10.0),
+                                      Text("Mascot: ${widget.team?.mascot}"),
+                                      Expanded(
+                                          child: ListView.builder(
+                                              itemCount: teamMemberJson == null
+                                                  ? 0
+                                                  : teamMemberJson?.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                person = Person.fromJson(
+                                                    personJson!.firstWhere((p) =>
+                                                        p["ID"] ==
+                                                        teamMemberJson
+                                                                ?.elementAt(
+                                                                    index)[
+                                                            "personalInfo"]));
+                                                teamMember =
+                                                    TeamMember.fromJson(
+                                                        teamMemberJson!
+                                                            .elementAt(index));
 
-                                        return GestureDetector(
-                                          onTap: () {
-                                            //if player is not null, add player to teamMembers list
+                                                return GestureDetector(
+                                                  onTap: () {
+                                                    //if player is not null, add player to teamMembers list
+                                                    Provider.of<SelectedTeamMembers>(
+                                                            context,
+                                                            listen: false)
+                                                        .changeSelectedPlayer(
+                                                            TeamMember.fromJson(
+                                                                teamMemberJson![
+                                                                    index]));
+                                                  },
+                                                  child: new Card(
+                                                    color: Colors.blue[800]
+                                                        ?.withOpacity(.75),
+                                                    child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        new Container(
+                                                          //white background
+
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child:
+                                                              //check if selected player exists in selectedPlayers list
+                                                              Provider.of<SelectedTeamMembers>(
+                                                                          context,
+                                                                          listen:
+                                                                              true)
+                                                                      .isSelected(
+                                                                          TeamMember.fromJson(
+                                                                              teamMemberJson![index]))
+                                                                  ? Icon(
+                                                                      Icons
+                                                                          .check_box,
+                                                                      color: Colors
+                                                                          .green,
+                                                                    )
+                                                                  : Icon(
+                                                                      Icons
+                                                                          .check_box_outline_blank,
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
+                                                        ),
+                                                        new Text(
+                                                            (person?.firstName ??
+                                                                    '') +
+                                                                ' ' +
+                                                                (person?.lastName ??
+                                                                    ''),
+                                                            style: TextStyle(
+                                                                fontSize: 18.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white)),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              })),
+                                      //submit button
+                                      Container(
+                                        alignment: Alignment.center,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.blue[800]),
+                                          child: Text('Submit'),
+                                          onPressed: () {
+                                            // teamID =
+                                            //     json.decode(widget.data!)['data'];
+                                            //update selectedPlayers team field to this team
                                             Provider.of<SelectedTeamMembers>(
                                                     context,
                                                     listen: false)
-                                                .changeSelectedPlayer(
-                                                    TeamMember.fromJson(
-                                                        teamMemberJson![
-                                                            index]));
+                                                .getSelectedPlayers
+                                                .forEach((p) {
+                                              p.team = teamID;
+                                              updateTeamMember(
+                                                  p.toJson(), p.id.toString());
+                                            });
+                                            Provider.of<AppRouterDelegate>(
+                                                    context,
+                                                    listen: false)
+                                                .navigateTo(
+                                                    TeamInformationRoutePath({
+                                              //convert teamID to an inteager
+                                              'teamID': teamID.toInt(),
+                                              "data": json.encode(Provider.of<
+                                                          SelectedTeamMembers>(
+                                                      context,
+                                                      listen: false)
+                                                  .getSelectedPlayers
+                                                  .map((e) => e.toJson())
+                                                  .toList())
+                                            }));
                                           },
-                                          child: new Card(
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                new Container(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child:
-                                                      //check if selected player exists in selectedPlayers list
-                                                      Provider.of<SelectedTeamMembers>(
-                                                                  context,
-                                                                  listen: true)
-                                                              .isSelected(TeamMember
-                                                                  .fromJson(
-                                                                      teamMemberJson![
-                                                                          index]))
-                                                          ? Icon(
-                                                              Icons.check_box,
-                                                              color:
-                                                                  Colors.green,
-                                                            )
-                                                          : Icon(
-                                                              Icons
-                                                                  .check_box_outline_blank,
-                                                              color:
-                                                                  Colors.grey,
-                                                            ),
-                                                ),
-                                                new Text((person?.firstName ??
-                                                        '') +
-                                                    ' ' +
-                                                    (person?.lastName ?? '')),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      })),
-                              //submit button
-                              Container(
-                                child: TextButton(
-                                  child: Text('Submit'),
-                                  onPressed: () {
-                                    // teamID =
-                                    //     json.decode(widget.data!)['data'];
-                                    //update selectedPlayers team field to this team
-                                    Provider.of<SelectedTeamMembers>(context,
-                                            listen: false)
-                                        .getSelectedPlayers
-                                        .forEach((p) {
-                                      p.team = teamID;
-                                      updateTeamMember(
-                                          p.toJson(), p.id.toString());
-                                    });
-                                    Provider.of<AppRouterDelegate>(context,
-                                            listen: false)
-                                        .navigateTo(TeamInformationRoutePath({
-                                      //convert teamID to an inteager
-                                      'teamID': teamID.toInt(),
-                                      "data": json.encode(
-                                          Provider.of<SelectedTeamMembers>(
-                                                  context,
-                                                  listen: false)
-                                              .getSelectedPlayers
-                                              .map((e) => e.toJson())
-                                              .toList())
-                                    }));
-                                  },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-          }),
+                              ],
+                            ),
+                          );
+                  }),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
