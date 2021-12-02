@@ -75,14 +75,20 @@ class _SelectTeamMembersPageState extends State<SelectTeamMembersPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Team Created!'),
+        duration: Duration(milliseconds: 600),
+      ));
+    });
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       ScaffoldMessenger.of(this.context).showSnackBar(SnackBar(
         content: Text('Loading Team Members'),
+        duration: Duration(milliseconds: 600),
       ));
     });
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     var teamID = getTeamID();
@@ -120,10 +126,6 @@ class _SelectTeamMembersPageState extends State<SelectTeamMembersPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                          width: 200,
-                                          child: Text(json.decode(
-                                              widget.data!)["message"])),
                                       Text(
                                           "New Team ${widget.team?.name}, in League ${widget.team?.league} Created"),
                                       SizedBox(height: 10.0),

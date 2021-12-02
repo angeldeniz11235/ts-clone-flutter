@@ -9,6 +9,7 @@ import 'package:dev_jayhackett_blogdemo/views/components/buttons/quick_action_bu
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class AddTeamPage extends StatefulWidget {
@@ -66,7 +67,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
                     : 800,
                 decoration: //white background wigh transparency and rounded corners
                     BoxDecoration(
-                  color: Colors.brown.shade700.withOpacity(.97),
+                  color: Colors.white.withOpacity(.8),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: FormBuilder(
@@ -90,15 +91,15 @@ class _AddTeamPageState extends State<AddTeamPage> {
                                 Container(
                                   alignment: Alignment.center,
                                   child: Padding(
-                                    padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                     child: Text(
                                       'Add Team',
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          color: Colors.deepOrangeAccent[700],
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 1.5,
-                                          fontFamily: 'Pacifico'),
+                                      style: GoogleFonts.pacifico(
+                                        textStyle: TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red[800]),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -113,10 +114,10 @@ class _AddTeamPageState extends State<AddTeamPage> {
                                 name: "teamName",
                                 autofocus: true,
                                 decoration: InputDecoration(
-                                  fillColor: Colors.red[900],
+                                  fillColor: Colors.black.withOpacity(.6),
                                   filled: true,
                                   hintStyle: TextStyle(
-                                    color: Colors.white.withOpacity(.8),
+                                    color: Colors.white.withOpacity(.6),
                                   ),
                                   hintText: 'Team Name',
                                   contentPadding: EdgeInsets.symmetric(
@@ -151,9 +152,9 @@ class _AddTeamPageState extends State<AddTeamPage> {
                                 decoration: InputDecoration(
                                   hintText: 'Mascot',
                                   hintStyle: TextStyle(
-                                    color: Colors.white.withOpacity(.8),
+                                    color: Colors.white.withOpacity(.6),
                                   ),
-                                  fillColor: Colors.red.shade900,
+                                  fillColor: Colors.black.withOpacity(.6),
                                   filled: true,
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 5.0, horizontal: 20.0),
@@ -163,7 +164,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                        color: Colors.red.shade900, width: 0.0),
+                                        color: Colors.black, width: 0.0),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(15.0)),
                                   ),
@@ -184,17 +185,17 @@ class _AddTeamPageState extends State<AddTeamPage> {
                               padding: const EdgeInsets.all(8.0),
                               child: DropdownButtonHideUnderline(
                                 child: FormBuilderDropdown(
-                                    dropdownColor: Colors.red.shade900,
+                                    dropdownColor: Colors.black,
                                     hint: Text(
                                       'Select a League',
                                       style: TextStyle(
-                                        color: Colors.white.withOpacity(.8),
+                                        color: Colors.white.withOpacity(.6),
                                       ),
                                     ),
                                     name: "teamLeague",
                                     items: _dropdownMenuItems,
                                     decoration: InputDecoration(
-                                        fillColor: Colors.red.shade900,
+                                        fillColor: Colors.black.withOpacity(.6),
                                         filled: true,
                                         contentPadding: EdgeInsets.symmetric(
                                             vertical: 5.0, horizontal: 20.0),
@@ -268,7 +269,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
                                       borderRadius: BorderRadius.circular(30),
                                     ),
                                     elevation: 5,
-                                    primary: Colors.grey.shade400,
+                                    primary: Colors.red[800],
                                   ),
                                   onPressed: () {
                                     _formKey.currentState!.reset();

@@ -69,10 +69,38 @@ class _TeamInfomationPageState extends State<TeamInformationPage> {
                 return Container(
                   child: Column(
                     children: <Widget>[
-                      Text(snapshot.data![index]['firstName']),
-                      Text(snapshot.data![index]['lastName']),
-                      Text(snapshot.data![index]['phone']),
-                      Text(snapshot.data![index]['email']),
+                      if (snapshot.data?[index]['firstName'] != null)
+                        Text(
+                          snapshot.data?[index]['firstName'],
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      if (snapshot.data?[index]['lastName'] != null)
+                        Text(
+                          snapshot.data?[index]['lastName'],
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      if (snapshot.data?[index]['phone'] != null)
+                        Text(
+                          snapshot.data?[index]['phone'],
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      if (snapshot.data?[index]['email'] != null)
+                        Text(
+                          snapshot.data?[index]['email'],
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                     ],
                   ),
                 );
