@@ -15,7 +15,7 @@ class DBconfig {
         return "10.0.2.2";
       }
     } else {
-      return '45.77.86.135'; //ADDRESS TO VULTR SERVER
+      return '107.152.35.192'; //ADDRESS TO PRODUCTION MYSQL SERVER
     }
   }
 
